@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 
 app = Flask(__name__)
-application_status = "success"
+application_online = True
 
 
 # Endpoint returns a JSON response with "Hello World"
@@ -15,11 +15,10 @@ def hello_world():
 def healthcheck():
     # Setting application status and details to success for demo purpose.
     # In future extend code to fetch application status and details.
-    # application_status = "success"
     details_success = "Application is running smoothly"
-    details_failure = "Application encountered error processing this request"
+    details_failure = "Application encountered error"
 
-    if application_status == "success":
+    if application_online:
         return jsonify(status="success", details=details_success), 200
     else:
         return jsonify(status="failure", details=details_failure), 500
