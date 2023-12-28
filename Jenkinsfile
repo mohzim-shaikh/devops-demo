@@ -2,24 +2,25 @@ pipeline {
     agent any
 
     stages {
-        stage('Commit') {
+        stage('Checkout') {
             steps {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mohzim-shaikh/devops-demo.git']])
             }
         }
-        stage('Build') {
+        stage('Lint') {
             steps {
-                sh 'python3 -m venv venv'
-                sh '. venv/bin/activate'                
-                sh 'pip3 install -r app/requirements.txt'
+                sh 'python3 -m flake8'
             }
         }
         stage('Test') {
             steps {
-                sh '. venv/bin/activate'                
                 sh 'python3 app_testcases.py'
             }
         }
-        
+        stage('Docker Lint') {
+            steps {
+                sh 'hadolint --ignore DL3008 Dockerfile'
+            }
+        }
     }
 }

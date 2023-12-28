@@ -38,4 +38,4 @@ EXPOSE 80
 
 WORKDIR /var/www/devops-demo
 
-CMD  ["/usr/sbin/apache2ctl -D FOREGROUND"]
+CMD  ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]

@@ -1,39 +1,52 @@
-# Debian - Python - Mod_Wsgi
+# DevOps Demo App
+## Overview
+- This is the repo for running python-flask app under mod_wsgi on apache in a docker container. It has two sample endpoints returning JSON response viz. 'Hello World' and application health status respectively.  
+- Its configured for standard code and docker checks with Jenkins. 
+- Finally docker container can be deployed on Kubernetes cluster as 'Deployment-ReplicaSet' with Load Balancer service to provide high availability. 
+## Solution Decisions
+**Web Framework: Flask** \
+Flask is a lightweight and flexible micro web framework for Python. It's well-suited for small to medium-sized applications and allows for quick development. \
+**Code Linting: Flake8** \
+Flake8 is used for linting to ensure code consistency and identify potential issues. It checks for PEP 8 compliance and can be customized with additional plugins for more checks. \
+**Testing Framework: unittest** \
+Python's built-in unittest module is used for writing and running tests. It provides a test discovery mechanism and assertions for verifying expected outcomes. \
+**Container Linting: hadolint** \
+hadolint is used to lint the Dockerfile to ensure best practices for creating Docker images. It checks for common mistakes and enforces best practices in Dockerfile creation. \
+**Containerization: Docker** \
+Docker is used for containerization to ensure that the application runs consistently across different environments. It simplifies deployment and dependency management. \
+**Containerization: Kubernetes** \
+Kubernetes LoadBalancer service along with Deployment-Replicaset provides various solution advantages such as high availablity, scalability, business continuite during system maintenance, etc. 
 
-This is the repo for running a python app under `mod_wsgi` on apache in a docker container
+## Automation with Jenkins
+Jenkins pipeline has below 4 stages and configuration available in Jenkinsfile. 
+- Checkout: This stage checks out the source code from the specified Git repository 
+- Lint: Lint: In this stage, the flake8 linter is using to validate Python code files.
+- Test: This stage runs Python test cases using unittest to verify each endpoint. 
+- Docker Lint: This stage uses hadolint to lint the Dockerfile. Please note this file needs to be updated in future to remedy 'DL3008'.    
 
-Many of the docker repo's out there use flask local server in their images.
-This repo is for a more production ready environment.
+## Steps to deploy on Kubernetes Cluster
+- Build docker image 
+```
+docker build -t devops-demo .
+```
+- Deploy on local Kubernetes cluster 
+```
+kubectl apply -f deployment.yaml
+```
+- Access endpoints using localhost (requires additional configuration for Production) 
+```
+http://localhost:80
+```
+```
+http://localhost:80/health
+```
 
-This repo will be built in stages
-It will contain a demo app written using the Flask framework
-
-I will be using [this Flask app](http://code.tutsplus.com/tutorials/an-introduction-to-pythons-flask-framework--net-28822) for the repo
-
-As of [commit f232e60c39fcd480fbabab6308eeaf24f4a9d5ae](https://github.com/Craicerjack/apache-flask/tree/f232e60c39fcd480fbabab6308eeaf24f4a9d5ae)
-The command to run the `Dockerfile` is:
-
-`docker run -d -p 80:80 --name <name> apache-flask`
-
-Alternatively, you can use docker-compose with:
-
-`docker-compose up -d`
-
- * Download the repo
- * build the image: `docker build -t apache-flask .`
-
-
-
-#### The docker file runs through the following steps:  
-
- - get debian bullseye-slim image.  
- - install the requirements for python and flask on debian  
- - copy over the `requirements.txt` file and run `pip install` on it  
- - This is copied separately so that the dependencies are cached and dont need to run everytime the image is rebuilt  
- - copy over the application config file for apache  
- - copy over the `.wsgi` file. This is the entrypoint for our application, the `run.py` file, and the application directory  
- - enable the new apache config file and headers   
- - dissable the default apache config file  
- - expose port 80  
- - point the container to the application directory  
- - the run command. 
+## Stack Information
+Python Version: Python 3.8 \
+Editor: Any Text Editor or IDE (Used Visual Code) \
+Web Framework: Flask (a micro web framework for Python) \
+Automation: Jenkins
+Linting Tool: Flake8 \
+Testing Framework: unittest \
+Containerization Tool: Docker \
+Container Linting Tool: hadolint 
