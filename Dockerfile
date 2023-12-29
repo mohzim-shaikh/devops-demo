@@ -1,14 +1,11 @@
 ############################################################
-# Dockerfile to build Flask App
-# Based on
+# Dockerfile to build Flask App under mod_wsgi on apache
 ############################################################
 
 # Set the base image
 FROM debian:bullseye-slim
 
-# File Author / Maintainer
-LABEL image.author="carlos.tighe@universityofgalway.ie"
-
+# Set Apache, mod_wsgi, python3
 RUN apt-get update && apt-get install --no-install-recommends -y apache2 \
     libapache2-mod-wsgi-py3 \
     python3 \
